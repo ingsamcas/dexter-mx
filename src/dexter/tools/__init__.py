@@ -39,6 +39,7 @@ from dexter.tools.yf_metrics import (
 from dexter.tools.yf_news import yf_get_news
 from dexter.tools.yf_prices import yf_get_price_snapshot, yf_get_prices
 from dexter.tools.databursatil import DATABURSATIL_TOOLS
+from dexter.tools.web_search import WEB_SEARCH_TOOLS, HAS_WEB_SEARCH
 
 
 FINANCIAL_DATASETS_TOOLS: list[Callable[..., any]] = [
@@ -83,12 +84,19 @@ def get_tools(
     """Return the tool collection for the requested data provider."""
     provider_key = provider.lower()
     
+    # Get base financial tools based on provider
     if provider_key == "yfinance":
-        return YFINANCE_TOOLS
+        tools = YFINANCE_TOOLS.copy()
     elif provider_key == "databursatil":
-        return DATABURSATIL_TOOLS
+        tools = DATABURSATIL_TOOLS.copy()
+    else:
+        tools = FINANCIAL_DATASETS_TOOLS.copy()
     
-    return FINANCIAL_DATASETS_TOOLS
+    # Add web search tools if available (Exa Search)
+    if HAS_WEB_SEARCH:
+        tools.extend(WEB_SEARCH_TOOLS)
+    
+    return tools
 
 
 TOOLS: list[Callable[..., any]] = get_tools()

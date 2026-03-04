@@ -13,6 +13,13 @@ Dexter MX es un agente autónomo de investigación financiera adaptado específi
   - **Financial Datasets**: Mercado estadounidense (opcional)
 - **Comando `/source`**: Cambiar fuentes dinámicamente durante el análisis
 
+### Web Search (Nuevo)
+- **Exa Search**: Búsqueda neural optimizada para IA
+  - Búsqueda de noticias financieras recientes
+  - Contexto sobre eventos del mercado
+  - Información cualitativa sobre emisoras
+- **Comandos**: `web_search`, `web_search_news`
+
 ### LLM y Modelos
 - **OpenRouter**: Múltiples modelos con una sola API key
 - **Comando `/model`**: Cambiar modelos en tiempo real
@@ -163,11 +170,13 @@ dexter-mx/
 │       ├── data_sources.py       # Multi-source manager
 │       └── tools/
 │           ├── yf_*.py           # Yahoo Finance tools
-│           └── databursatil/     # DataBursatil integration
-│               ├── api.py
-│               ├── db_prices.py
-│               ├── db_financials.py
-│               └── db_metrics.py
+│           ├── databursatil/     # DataBursatil integration
+│           │   ├── api.py
+│           │   ├── db_prices.py
+│           │   ├── db_financials.py
+│           │   └── db_metrics.py
+│           └── web_search/       # Exa Search integration
+│               └── exa_search.py
 ├── interactive_compare_with_memory.py  # Interactive CLI
 ├── dexter.sh                     # Docker wrapper
 └── Dockerfile
@@ -194,6 +203,7 @@ uv run pytest
 - [x] Sistema multi-source con fallback
 - [x] Comandos interactivos `/model` y `/source`
 - [x] Memoria conversacional
+- [x] Exa Search para noticias y contexto
 - [ ] Integración Lápiz API
 - [ ] Export de reportes PDF
 - [ ] Bot de WhatsApp
