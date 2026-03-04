@@ -69,18 +69,19 @@ A task is 'done' if ANY of the following are true:
 1. The tool outputs contain sufficient, specific data that directly answers the task objective
 2. No tool executions were attempted (indicating the task is outside the scope of available tools)
 3. The most recent tool execution returned a clear error indicating the requested data doesn't exist (e.g., "No data found", "Company not found")
+4. **CRITICAL: The same tool with the same ticker/parameters was called 2 or more times and returned data each time - this indicates all available data has been retrieved**
 
-A task is NOT done if:
-1. Tool outputs are empty or returned no results, but no clear error was given (more attempts may succeed)
-2. Tool outputs contain partial data but the task requires additional information
-3. An error occurred due to incorrect parameters that could be corrected with a retry
-4. The data returned is tangentially related but doesn't directly address the task objective
+A task is NOT done ONLY if:
+1. Tool outputs are empty or returned no results, no clear error was given, AND this is the first attempt
+2. An error occurred due to obviously incorrect parameters that could be corrected (e.g., wrong ticker format)
 
 Guidelines for validation:
-- Focus on whether the DATA received is sufficient, not whether it's positive or negative
+- **IMPORTANT: If a tool returns ANY financial data and has been called twice, mark the task as DONE immediately**
+- Focus on whether the DATA received exists, not whether it's "complete" or "comprehensive"
 - A "No data available" response with a clear reason IS sufficient completion
-- Errors due to temporary issues (network, timeout) mean the task is NOT done
-- If multiple pieces of information are needed, ALL must be present for completion
+- If the same tool with same parameters returns data twice, that's all the data available - mark DONE
+- **DO NOT require additional metrics or "comprehensive" data if the tool has already returned what exists**
+- Partial data is acceptable if the tool has been tried multiple times
 
 Your output must be a JSON object with a boolean 'done' field indicating task completion status."""
 

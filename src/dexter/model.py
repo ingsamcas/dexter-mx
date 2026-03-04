@@ -10,9 +10,15 @@ from openai import APIConnectionError
 
 from dexter.prompts import DEFAULT_SYSTEM_PROMPT
 
-# Initialize the OpenAI client
-# Make sure your OPENAI_API_KEY is set in your .env
-llm = ChatOpenAI(model="gpt-4.1", temperature=0, api_key=os.getenv("OPENAI_API_KEY"))
+# Initialize with OpenRouter support
+default_model = os.getenv("OPENROUTER_MODEL", "openrouter/auto")
+llm = ChatOpenAI(
+    model=default_model,
+    temperature=0,
+    api_key=os.getenv("OPENROUTER_API_KEY"),
+    base_url="https://openrouter.ai/api/v1",
+    default_headers={"HTTP-Referer": "https://github.com/dexter-free"}
+)
 
 def call_llm(
     prompt: str,
