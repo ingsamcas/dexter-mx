@@ -13,7 +13,24 @@ SESSIONS_DIR = "/app/sessions" if os.path.exists("/app/sessions") else "./sessio
 os.makedirs(SESSIONS_DIR, exist_ok=True)
 
 # Inicializar manager de fuentes de datos
-data_source_manager = DataSourceManager.from_env()
+# Si DATABURSATIL_API_KEY existe, usar databursatil como primaria
+try:
+    if os.getenv("DATABURSATIL_API_KEY"):
+        data_source_manager = DataSourceManager(
+            primary=DataSource.DATABURSATIL,
+            secondary=DataSource.YAHOO_FINANCE
+        )
+        print("🇲🇽 DataBursatil detectado - configurado como fuente primaria")
+    else:
+        data_source_manager = DataSourceManager.from_env()
+        print("📊 Yahoo Finance configurado como fuente primaria (gratis)")
+except ValueError as e:
+    # Si falla (ej. falta API key), usar Yahoo Finance
+    data_source_manager = DataSourceManager(
+        primary=DataSource.YAHOO_FINANCE,
+        secondary=DataSource.YAHOO_FINANCE
+    )
+    print(f"⚠️  {str(e)} - usando Yahoo Finance")
 
 # MODELOS COMPLETOS
 MODELS = {
@@ -102,6 +119,7 @@ def run_query(query: str):
     print(f"\n{'='*60}")
     print(f"🤖 Modelo: {current_model}")
     print(f"📊 Query: {query}")
+    print(f"🔍 Fuente: {data_source_manager.get_primary_provider()} (fallback: {data_source_manager.get_secondary_provider()})")
     print(f"{'='*60}\n")
     
     os.environ["OPENROUTER_MODEL"] = current_model

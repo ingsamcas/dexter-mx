@@ -54,6 +54,12 @@ Tool Selection Guidelines:
 - If the task mentions time periods (quarterly, annual, last 5 years), use appropriate period/limit parameters
 - Avoid calling the same tool with the same parameters repeatedly
 
+IMPORTANT - Mexican Stock Tickers:
+- For Mexican companies (AMXL, WALMEX, BIMBOA, FCFE18, etc.), ALWAYS append .MX suffix
+- Examples: AMXL → AMXL.MX, WALMEX → WALMEX.MX, BIMBOA → BIMBOA.MX
+- If a tool fails with "No data found" for a ticker without .MX, retry with .MX suffix
+- Common Mexican tickers: AMXL, WALMEX, BIMBOA, GFNORTEO, CEMEXCPO, TLEVISA, FCFE18 (FIBRAs)
+
 When NOT to call tools:
 - The previous tool outputs already contain sufficient data to complete the task
 - The task is asking for general knowledge or calculations (not data retrieval)
