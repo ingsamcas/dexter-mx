@@ -273,14 +273,6 @@ def switch_source(level: str, source_name: str):
 def main():
     init_session()
     
-    # Mostrar fuente de datos detectada
-    print("\n" + "="*60)
-    print(f"🔍 FUENTE DE DATOS ACTIVA")
-    print("="*60)
-    print(f"  Primaria:   {data_source_manager.get_primary_provider()} 👈")
-    print(f"  Secundaria: {data_source_manager.get_secondary_provider()}")
-    print("="*60 + "\n")
-    
     print("🚀 DEXTER - Comparador con Memoria Conversacional")
     print("\nComandos:")
     print("  /model <nombre>  - Cambiar modelo")
@@ -295,7 +287,15 @@ def main():
     print("✨ NUEVO: Memoria conversacional - usa 'continue', 'more details', etc.\n")
     
     show_models()
-    show_sources()
+    
+    # Mostrar info de fuentes al final para que sea visible
+    print("\n" + "="*60)
+    print("📊 FUENTES DE DATOS CONFIGURADAS")
+    print("="*60)
+    print(f"  🎯 Primaria:   {data_source_manager.get_primary_provider().upper()}")
+    print(f"  🔄 Secundaria: {data_source_manager.get_secondary_provider().upper()}")
+    print("\n💡 Tip: usa /sources para ver todas las opciones")
+    print("="*60 + "\n")
     
     while True:
         try:
