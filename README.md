@@ -1,135 +1,249 @@
-# Dexter - Free 🤖
+# Dexter MX - Agente de Investigación Financiera para Mercado Mexicano 🇲🇽
 
-Dexter is an autonomous financial research agent that thinks, plans, and learns as it works. It performs analysis using task planning, self-reflection, and real-time market data. Think Claude Code, but built specifically for financial research.
+Dexter MX es un agente autónomo de investigación financiera adaptado específicamente para el mercado mexicano. Integra múltiples fuentes de datos (DataBursatil, Yahoo Finance), soporte multi-modelo con OpenRouter, y memoria conversacional para análisis profundos de la Bolsa Mexicana de Valores (BMV) y BIVA.
 
-*It's a fork of https://github.com/virattt/dexter* 
+*Fork de [dexter-free](https://github.com/michaelh03/dexter-free), optimizado para el mercado mexicano*
 
+## 🎯 Diferencias vs. dexter-free original
 
-<img width="979" height="651" alt="Screenshot 2025-10-30 at 14 17 41" src="https://github.com/user-attachments/assets/0f3c5cac-d8fd-4cb8-8f79-87e0961ef40d" />
+### Proveedores de Datos
+- **Sistema Multi-Fuente**: Fuentes primaria y secundaria con fallback automático
+  - **DataBursatil**: Datos premium del mercado mexicano (BMV, BIVA)
+  - **Yahoo Finance**: Datos globales gratuitos (incluye tickers .MX)
+  - **Financial Datasets**: Mercado estadounidense (opcional)
+- **Comando `/source`**: Cambiar fuentes dinámicamente durante el análisis
 
-## Overview
+### LLM y Modelos
+- **OpenRouter**: Múltiples modelos con una sola API key
+- **Comando `/model`**: Cambiar modelos en tiempo real
+- **Comparador de Modelos**: Herramienta interactiva para comparar análisis
+- **Modelos soportados**: GPT-5.x, Claude 4.x, Gemini 3.x, DeepSeek, Grok, y más
 
-Dexter takes complex financial questions and turns them into clear, step-by-step research plans. It runs those tasks using live market data, checks its own work, and refines the results until it has a confident, data-backed answer.  
+### Optimizaciones para México
+- **Memoria Conversacional**: Contexto entre queries para análisis profundos
+- **Límites Extendidos**: `max_steps=300` para análisis complejos (múltiples FIBRAs)
+- **Validación Optimizada**: Manejo inteligente de datos parciales en Yahoo Finance
+- **Soporte FIBRAs**: Manejo especial para FIBRAs mexicanas con datos limitados
 
-It’s not just another chatbot.  It’s an agent that plans ahead, verifies its progress, and keeps iterating until the job is done.
+## 📋 Requisitos
 
-**Key Capabilities:**
-- **Intelligent Task Planning**: Automatically decomposes complex queries into structured research steps
-- **Autonomous Execution**: Selects and executes the right tools to gather financial data
-- **Self-Validation**: Checks its own work and iterates until tasks are complete
-- **Real-Time Financial Data**: Access to income statements, balance sheets, and cash flow statements
-- **Safety Features**: Built-in loop detection and step limits to prevent runaway execution
-
-Dexter-Free also supports the **free API from Yahoo Finance**, giving you a zero-cost data provider option out of the box.
-
-[![Twitter Follow](https://img.shields.io/twitter/follow/michaelh03x?style=social)](https://twitter.com/michaelh03x)
-
-### Prerequisites
-
-- Python 3.10 or higher
+- Python 3.11+
 - [uv](https://github.com/astral-sh/uv) package manager
-- OpenAI API key (get [here](https://platform.openai.com/api-keys))
-- Financial Datasets API key (optional; get [here](https://financialdatasets.ai) for premium data)
+- Docker (opcional pero recomendado)
 
-### Installation
+## 🚀 Instalación
 
-1. Clone the repository:
+### Setup Local
+
 ```bash
-git clone https://github.com/virattt/dexter.git
-cd dexter
-```
+git clone https://github.com/ingsamcas/dexter-mx.git
+cd dexter-mx
 
-2. Install dependencies with uv:
-```bash
+# Instalar dependencias
 uv sync
-```
 
-3. Set up your environment variables:
-```bash
-# Copy the example environment file
+# Configurar variables de entorno
 cp env.example .env
-
-# Edit .env and add your API keys
-# OPENAI_API_KEY=your-openai-api-key
-# FINANCIAL_DATASETS_API_KEY=your-financial-datasets-api-key
+# Editar .env con tus API keys
 ```
 
-### Usage
+### Setup con Docker (Recomendado)
 
-Run Dexter in interactive mode (defaults to Yahoo Finance):
 ```bash
-uv run dexter-agent
+# Build
+docker build -t dexter-mx .
+
+# Run con modo interactivo
+./dexter.sh compare
 ```
 
-Switch to the FinancialDatasets provider when you need premium data:
+## 💡 Uso
+
+### Modo Comparador Interactivo (Recomendado)
+
 ```bash
-uv run dexter-agent --provider financialdatasets
+./dexter.sh compare
 ```
 
-### Example Queries
+**Comandos disponibles:**
+- `/model <nombre>` - Cambiar modelo LLM
+- `/models` - Ver modelos disponibles
+- `/source primary <fuente>` - Cambiar fuente primaria
+- `/source secondary <fuente>` - Cambiar fuente secundaria
+- `/sources` - Ver fuentes de datos disponibles
+- `/history` - Ver historial de conversación
+- `/clear` - Limpiar historial
+- `/quit` - Salir
 
-Try asking Dexter questions like:
-- "What was Apple's revenue growth over the last 4 quarters?"
-- "Compare Microsoft and Google's operating margins for 2023"
-- "Analyze Tesla's cash flow trends over the past year"
-- "What is Amazon's debt-to-equity ratio based on recent financials?"
+### Modo Agente Directo
 
-Dexter will automatically:
-1. Break down your question into research tasks
-2. Fetch the necessary financial data
-3. Perform calculations and analysis
-4. Provide a comprehensive, data-rich answer
+```bash
+./dexter.sh agent
+```
 
-## Architecture
+### Ejemplo de Uso Completo
 
-Dexter uses a multi-agent architecture with specialized components:
+```bash
+🚀 DEXTER - Comparador con Memoria Conversacional
 
-- **Planning Agent**: Analyzes queries and creates structured task lists
-- **Action Agent**: Selects appropriate tools and executes research steps
-- **Validation Agent**: Verifies task completion and data sufficiency
-- **Answer Agent**: Synthesizes findings into comprehensive responses
+[gpt-5.2] >>> /source primary databursatil
+✓ Primary source: yfinance → databursatil
 
-## Project Structure
+[gpt-5.2] >>> /source secondary yahoo
+✓ Secondary source: yfinance → yahoo
+
+[gpt-5.2] >>> Analyze the fundamentals of AMXL, WALMEX and BIMBOA
+
+[Agent ejecuta análisis con DataBursatil como fuente primaria...]
+
+[gpt-5.2] >>> /model claude-sonnet-46
+✓ Modelo cambiado: gpt-5.2 → claude-sonnet-4.6
+
+[claude-sonnet-4.6] >>> Compare the ROE of the 3 companies
+
+[Agent continúa con contexto previo usando Claude...]
+
+[claude-sonnet-4.6] >>> continue with debt analysis
+
+[Agent usa memoria conversacional para entender "continue"...]
+```
+
+## ⚙️ Variables de Entorno
+
+### Requeridas
+
+```bash
+# LLM Provider
+OPENROUTER_API_KEY=sk-or-v1-...
+OPENROUTER_MODEL=openai/gpt-5.2
+
+# Data Source (al menos una)
+DATABURSATIL_API_KEY=db_...
+# o usar Yahoo Finance (gratis, no requiere key)
+```
+
+### Opcionales
+
+```bash
+# Configuración de fuentes
+PRIMARY_DATA_SOURCE=databursatil
+SECONDARY_DATA_SOURCE=yfinance
+
+# Financial Datasets (datos US, requiere pago)
+FINANCIAL_DATASETS_API_KEY=fd_...
+```
+
+## 📊 Fuentes de Datos Disponibles
+
+| Fuente | Mercados | Costo | API Key | Cobertura |
+|--------|----------|-------|---------|-----------|
+| **DataBursatil** | México (BMV, BIVA) | Pago | ✓ | Excelente para tickers MX |
+| **Yahoo Finance** | Global (incluye .MX) | Gratis | ✗ | Buena, puede tener gaps |
+| **Financial Datasets** | USA | Pago | ✓ | Excelente para tickers US |
+
+### Cobertura por Ticker
+
+**Tickers Mexicanos**: `AMXL.MX`, `WALMEX.MX`, `BIMBOA.MX`, `FCFE18.MX` (FIBRAs)
+- **Mejor con**: DataBursatil (datos más completos)
+- **Alternativa**: Yahoo Finance (puede tener gaps en FIBRAs)
+
+**Tickers US**: `AAPL`, `TSLA`, `MSFT`
+- **Mejor con**: Financial Datasets o Yahoo Finance
+- **DataBursatil**: Cobertura limitada
+
+## 🏗️ Arquitectura
 
 ```
-dexter/
+dexter-mx/
 ├── src/
-│   ├── dexter/
-│   │   ├── agent.py      # Main agent orchestration logic
-│   │   ├── model.py      # LLM interface
-│   │   ├── tools.py      # Financial data tools
-│   │   ├── prompts.py    # System prompts for each component
-│   │   ├── schemas.py    # Pydantic models
-│   │   ├── utils/        # Utility functions
-│   │   └── cli.py        # CLI entry point
-├── pyproject.toml
-└── uv.lock
+│   └── dexter/
+│       ├── agent.py              # Agent core con multi-source
+│       ├── model.py              # OpenRouter integration
+│       ├── prompts.py            # Optimized prompts
+│       ├── data_sources.py       # Multi-source manager
+│       └── tools/
+│           ├── yf_*.py           # Yahoo Finance tools
+│           └── databursatil/     # DataBursatil integration
+│               ├── api.py
+│               ├── db_prices.py
+│               ├── db_financials.py
+│               └── db_metrics.py
+├── interactive_compare_with_memory.py  # Interactive CLI
+├── dexter.sh                     # Docker wrapper
+└── Dockerfile
 ```
 
-## Configuration
+## 🛠️ Desarrollo
 
-Dexter supports configuration via the `Agent` class initialization:
+### Agregar nueva fuente de datos
 
-```python
-from dexter.agent import Agent
+1. Crear módulo en `src/dexter/tools/nuevafuente/`
+2. Implementar herramientas siguiendo patrón `@tool`
+3. Registrar en `src/dexter/tools/__init__.py`
+4. Agregar a `DataSource` enum en `data_sources.py`
 
-agent = Agent(
-    max_steps=20,              # Global safety limit
-    max_steps_per_task=5       # Per-task iteration limit
-)
+### Testing
+
+```bash
+uv run pytest
 ```
 
-## How to Contribute
+## 🗺️ Roadmap
 
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
+- [x] Integración DataBursatil
+- [x] Sistema multi-source con fallback
+- [x] Comandos interactivos `/model` y `/source`
+- [x] Memoria conversacional
+- [ ] Integración Lápiz API
+- [ ] Export de reportes PDF
+- [ ] Bot de WhatsApp
+- [ ] API REST service
+- [ ] Migración a Kotlin
 
-**Important**: Please keep your pull requests small and focused.  This will make it easier to review and merge.
+## 📝 Queries de Ejemplo
 
+Prueba preguntas como:
 
-## License
+**Mercado Mexicano:**
+- "What was AMXL's revenue growth over the last 4 quarters?"
+- "Compare WALMEX and BIMBOA's operating margins for 2023"
+- "Analyze FCFE18 cash flow trends over the past year"
 
-This project is licensed under the MIT License.
+**Análisis Comparativo:**
+- "Compare the top 3 FIBRAs in Mexico by market cap"
+- "What are the key differences between AMXL and TELMEX?"
+
+**Con Memoria Conversacional:**
+1. "Analyze WALMEX fundamentals"
+2. "continue with profitability analysis"
+3. "compare with its main competitor"
+
+## 🤝 Contribuir
+
+1. Fork el repositorio
+2. Crea una rama: `git checkout -b feat/amazing-feature`
+3. Commit cambios: `git commit -m "feat: add amazing feature"`
+4. Push a tu branch: `git push origin feat/amazing-feature`
+5. Abre un Pull Request
+
+**Importante**: PRs pequeños y enfocados para facilitar review.
+
+## 📄 Licencia
+
+MIT License - ver [LICENSE](LICENSE) para detalles.
+
+## 🙏 Créditos
+
+Basado en:
+- [dexter](https://github.com/virattt/dexter) por @virattt
+- [dexter-free](https://github.com/michaelh03/dexter-free) por @michaelh03
+
+Adaptado para el mercado mexicano por [@ingsamcas](https://github.com/ingsamcas).
+
+## 📞 Soporte
+
+¿Preguntas? Abre un [Issue](https://github.com/ingsamcas/dexter-mx/issues) o contáctame en Twitter.
+
+---
+
+**⚠️ Aviso**: Este software es para fines informativos. No constituye asesoría financiera. Siempre consulta con un profesional certificado antes de tomar decisiones de inversión.
