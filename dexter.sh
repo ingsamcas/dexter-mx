@@ -7,7 +7,7 @@ case "$1" in
       --name dexter-compare \
       --env-file .env \
       -v $(pwd)/sessions:/app/sessions \
-      dexter-free \
+      dexter-mx \
       uv run python interactive_compare_with_memory.py
     ;;
   compare-simple)
@@ -16,14 +16,15 @@ case "$1" in
       --name dexter-compare \
       --env-file .env \
       -v $(pwd)/sessions:/app/sessions \
-      dexter-free
+      dexter-mx \
+      uv run python interactive_compare_fixed.py
     ;;
   agent)
     echo "🤖 Iniciando Dexter Agent original..."
     docker run -it --rm \
       --name dexter-agent \
       --env-file .env \
-      dexter-free \
+      dexter-mx \
       uv run dexter-agent
     ;;
   *)
