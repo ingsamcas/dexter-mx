@@ -62,7 +62,6 @@ def web_search(
         search_params = {
             "num_results": min(num_results, 10),  # Cap at 10
             "type": search_type,
-            "use_autoprompt": True,  # Let Exa optimize the query
         }
         
         if include_domains:
@@ -75,7 +74,7 @@ def web_search(
             query,
             **search_params,
             text={"max_characters": 500},  # Get snippet
-            highlights=True
+            highlights={"num_sentences": 2}  # Get 2 key sentences
         )
         
         # Format results
@@ -154,10 +153,9 @@ def web_search_news(
             query,
             num_results=min(num_results, 10),
             type="auto",
-            use_autoprompt=True,
             start_published_date=start_date,
             text={"max_characters": 500},
-            highlights=True
+            highlights={"num_sentences": 2}
         )
         
         # Format results
