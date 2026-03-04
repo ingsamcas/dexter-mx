@@ -20,17 +20,14 @@ try:
             primary=DataSource.DATABURSATIL,
             secondary=DataSource.YAHOO_FINANCE
         )
-        print("🇲🇽 DataBursatil detectado - configurado como fuente primaria")
     else:
         data_source_manager = DataSourceManager.from_env()
-        print("📊 Yahoo Finance configurado como fuente primaria (gratis)")
 except ValueError as e:
     # Si falla (ej. falta API key), usar Yahoo Finance
     data_source_manager = DataSourceManager(
         primary=DataSource.YAHOO_FINANCE,
         secondary=DataSource.YAHOO_FINANCE
     )
-    print(f"⚠️  {str(e)} - usando Yahoo Finance")
 
 # MODELOS COMPLETOS
 MODELS = {
@@ -231,17 +228,31 @@ def clear_history():
 
 def show_sources():
     print("\n" + "="*60)
-    print("📊 FUENTES DE DATOS")
+    print("📊 FUENTES DE DATOS CONFIGURADAS")
     print("="*60)
-    print(f"\n  Primary:   {data_source_manager.get_primary_provider()} 👉")
-    print(f"  Secondary: {data_source_manager.get_secondary_provider()}")
-    print("\nDisponibles:")
-    print("  yahoo        → Yahoo Finance (gratis)")
-    print("  databursatil → DataBursatil (premium MX)")
-    print("  financialdatasets → Financial Datasets (premium US)")
-    print("\nUso:")
+    
+    primary = data_source_manager.get_primary_provider()
+    secondary = data_source_manager.get_secondary_provider()
+    
+    # Mostrar fuentes activas con indicador visual
+    print(f"\n  🎯 Primaria:   {primary.upper()}")
+    print(f"  🔄 Secundaria: {secondary.upper()}")
+    
+    print("\n📋 Disponibles:")
+    print("  yahoo             → Yahoo Finance (gratis, global)")
+    print("  databursatil      → DataBursatil (premium, México)")
+    print("  financialdatasets → Financial Datasets (premium, USA)")
+    
+    print("\n💡 Uso:")
     print("  /source primary yahoo")
     print("  /source secondary databursatil")
+    print("  /sources  (ver este menú)")
+    
+    print("\n💰 Costo por fuente:")
+    print(f"  yahoo:             GRATIS {'✓ ACTIVA' if 'yfinance' in [primary, secondary] else ''}")
+    print(f"  databursatil:      PAGO {'✓ ACTIVA' if 'databursatil' in [primary, secondary] else '(necesita DATABURSATIL_API_KEY)'}")
+    print(f"  financialdatasets: PAGO {'✓ ACTIVA' if 'financialdatasets' in [primary, secondary] else '(necesita FINANCIAL_DATASETS_API_KEY)'}")
+    
     print("="*60 + "\n")
 
 def switch_source(level: str, source_name: str):
@@ -261,6 +272,14 @@ def switch_source(level: str, source_name: str):
 
 def main():
     init_session()
+    
+    # Mostrar fuente de datos detectada
+    print("\n" + "="*60)
+    print(f"🔍 FUENTE DE DATOS ACTIVA")
+    print("="*60)
+    print(f"  Primaria:   {data_source_manager.get_primary_provider()} 👈")
+    print(f"  Secundaria: {data_source_manager.get_secondary_provider()}")
+    print("="*60 + "\n")
     
     print("🚀 DEXTER - Comparador con Memoria Conversacional")
     print("\nComandos:")
