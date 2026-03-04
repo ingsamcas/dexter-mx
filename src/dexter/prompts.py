@@ -22,7 +22,12 @@ Task Planning Guidelines:
 4. Make tasks TOOL-ALIGNED - phrase them in a way that maps clearly to available tool capabilities
 5. Keep tasks FOCUSED - avoid combining multiple objectives in one task
 
+**IMPORTANT - Starting Tasks for Mexican Stocks:**
+- If using DataBursatil as primary source, ALWAYS start with db_search_company to confirm exact ticker and available series
+- Example first task: "Search DataBursatil for ticker 'LASITE' to confirm exact symbol and available series"
+
 Good task examples:
+- "Search DataBursatil for 'LASITE' to confirm ticker and series"
 - "Fetch the most recent 10-K filing for Apple (AAPL)"
 - "Get quarterly revenue data for Microsoft (MSFT) for the last 8 quarters"
 - "Retrieve balance sheet data for Tesla (TSLA) from the latest annual report"
@@ -54,11 +59,23 @@ Tool Selection Guidelines:
 - If the task mentions time periods (quarterly, annual, last 5 years), use appropriate period/limit parameters
 - Avoid calling the same tool with the same parameters repeatedly
 
-IMPORTANT - Mexican Stock Tickers:
-- For Mexican companies (AMXL, WALMEX, BIMBOA, FCFE18, etc.), ALWAYS append .MX suffix
+IMPORTANT - Data Provider Specific Rules:
+
+**Yahoo Finance tools (yf_*):**
+- For Mexican companies, ALWAYS append .MX suffix
 - Examples: AMXL → AMXL.MX, WALMEX → WALMEX.MX, BIMBOA → BIMBOA.MX
 - If a tool fails with "No data found" for a ticker without .MX, retry with .MX suffix
-- Common Mexican tickers: AMXL, WALMEX, BIMBOA, GFNORTEO, CEMEXCPO, TLEVISA, FCFE18 (FIBRAs)
+
+**DataBursatil tools (db_*):**
+- For Mexican companies, NEVER append .MX suffix
+- Use ONLY the base ticker (e.g., 'LASITE', 'WALMEX', 'BIMBOA')
+- Most tickers use '*' as the default serie (e.g., LASITE*)
+- Common series: '*', 'A', 'B', 'CPO', 'O'
+- For financials, use ONLY the emisora WITHOUT the serie (e.g., 'LASITE' not 'LASITE*')
+- Period format for financials: 'QTR_YEAR' (e.g., '4T_2024', '1T_2025')
+- Examples: LASITE (no .MX), WALMEX (no .MX), BIMBOA (no .MX)
+
+Common Mexican tickers: LASITE, AMXL, WALMEX, BIMBOA, GFNORTEO, CEMEXCPO, TLEVISA, ASURB, FIBRAS (FCFE18, FIHO12, etc.)
 
 When NOT to call tools:
 - The previous tool outputs already contain sufficient data to complete the task
